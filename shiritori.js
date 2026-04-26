@@ -11,14 +11,15 @@ class Shiritory {
       this.words.push(newWord);
       return this.words;
     }
+
     const lastWord = this.words[this.words.length - 1];
     if (!this.words.includes(newWord) && lastWord.at(-1) === newWord.at(0)) {
       this.words.push(newWord);
       return this.words;
-    } else {
-      this.game_over = true;
-      return `game over`;
     }
+
+    this.game_over = true;
+    return `game over`;
   }
 
   restart() {
