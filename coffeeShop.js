@@ -3,7 +3,7 @@
 //1
 //CoffeeShop
 class CoffeeShop {
-  constructor(name, menu) {
+  constructor(name, menu = []) {
     this.name = name;
     this.menu = menu;
     this.orders = [];
@@ -22,9 +22,9 @@ class CoffeeShop {
     if (!this.orders.length) {
       return `All orders have been fulfilled!`;
     } else {
-      let firstItem = this.orders[0];
-      this.orders.splice(0, 1);
-      return `The ${firstItem} is ready!.`;
+      const [firstElem, ...rest] = this.orders;
+      this.orders = rest;
+      return `The ${firstElem} is ready!.`;
     }
   }
 
@@ -35,17 +35,13 @@ class CoffeeShop {
   dueAmount() {
     if (!this.orders.length) {
       return 0;
-    } else {
-      let prices = [];
-      for (let order of this.orders) {
-        for (let item of this.menu) {
-          if (order === item.name) {
-            prices.push(item.price);
-          }
-        }
-      }
-      return prices.reduce((acc, curr) => acc + curr, 0);
     }
+
+    const orderedMenuItems = this.orders.map((order) =>
+      this.menu.find((item) => item.name === order),
+    );
+
+    return orderedMenuItems.reduce((acc, curr) => acc + curr.price, 0);
   }
 
   cheapestItem() {
@@ -56,19 +52,15 @@ class CoffeeShop {
 
   drinksOnly() {
     const grouped = Object.groupBy(this.menu, ({ type }) => type);
-    const drinkNames = [];
-    for (const drink of grouped.drink) {
-      drinkNames.push(drink.name);
-    }
+    const drinkNames = grouped.drink.map((item) => item.name);
+
     return drinkNames;
   }
 
   foodOnly() {
     const grouped = Object.groupBy(this.menu, ({ type }) => type);
-    const foodNames = [];
-    for (const food of grouped.food) {
-      foodNames.push(food.name);
-    }
+    const foodNames = grouped.food.map((item) => item.name);
+
     return foodNames;
   }
 }
